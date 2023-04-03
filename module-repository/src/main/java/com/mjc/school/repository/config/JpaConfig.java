@@ -17,7 +17,6 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories("com.mjc.school.repository")
-@PropertySource("classpath:application.properties")
 public class JpaConfig {
     @Bean
     LocalContainerEntityManagerFactoryBean entityManagerFactory() {
