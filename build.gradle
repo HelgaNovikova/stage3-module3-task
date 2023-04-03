@@ -1,0 +1,69 @@
+plugins {
+    id 'java'
+//    id 'org.springframework.boot' version '2.7.7'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+wrapper {
+    gradleVersion = gradlewVersion
+}
+
+
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+//    apply plugin: "io.spring.dependency-management"
+    group = 'com.mjc.school'
+
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework:spring-framework-bom:${springVersion}"
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+        }
+    }
+
+    dependencies {
+        implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+        annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+        implementation "org.springframework:spring-core:$springVersion"
+        implementation "org.springframework:spring-context:$springVersion"
+
+        testImplementation "org.springframework:spring-test:$springVersion"
+        testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiterVersion"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiterVersion"
+       // testImplementation "com.tngtech.archunit:archunit:$archUnitVersion"
+        testImplementation "com.tngtech.archunit:archunit-junit5:1.0.0"
+//        implementation 'org.hibernate:hibernate-entitymanager:5.6.15.Final'
+        implementation("org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}")
+
+    }
+    test {
+        useJUnitPlatform()
+    }
+}
+
+task repack(type: Jar, dependsOn: ':module-main:build') {
+    if (findProject(':module-main') != null) {
+        entryCompression = ZipEntryCompression.STORED
+        def buildJar = zipTree("${project(':module-main').buildDir}/libs/module-main.jar")
+        from(buildJar) { into('/') }
+        manifest {
+            attributes(
+                    'Main-Class': 'com.mjc.school.Main'
+            )
+        }
+    }
+}
