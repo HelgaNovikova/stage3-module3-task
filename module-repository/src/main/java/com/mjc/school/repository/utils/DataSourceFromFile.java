@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Component
-public class DataSourceFromFile implements InitializingBean, DataSource {
+public class DataSourceFromFile implements InitializingBean {
 
     public static final int DEFAULT_NEWS_COUNT_TO_GENERATE = 20;
     private final Map<Long, NewsModel> news = new HashMap<>();
@@ -61,12 +61,10 @@ public class DataSourceFromFile implements InitializingBean, DataSource {
         return authorsFromFile;
     }
 
-    @Override
-    public Map<Long, NewsModel> getNews() {
+     public Map<Long, NewsModel> getNews() {
         return news;
     }
 
-    @Override
     public Map<Long, AuthorModel> getAuthors() {
         return authors;
     }
