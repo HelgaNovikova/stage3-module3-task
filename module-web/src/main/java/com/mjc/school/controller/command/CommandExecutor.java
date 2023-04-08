@@ -6,6 +6,7 @@ import com.mjc.school.controller.annotation.CommandHandler;
 import com.mjc.school.controller.annotation.CommandParam;
 import com.mjc.school.service.dto.AuthorCreateDto;
 import com.mjc.school.service.dto.NewsCreateDto;
+import com.mjc.school.service.dto.TagCreateDto;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -83,7 +84,9 @@ public class CommandExecutor {
             return DtoMapper.INSTANCE.toAuthors(body);
         } else if (dtoClass.equals(NewsCreateDto.class)) {
             return DtoMapper.INSTANCE.toNews(body);
-        } else throw new IllegalArgumentException("Class %s is not supported for conversion");
+        } else if (dtoClass.equals(TagCreateDto.class)) {
+            return DtoMapper.INSTANCE.toTags(body);
+        } else throw new IllegalArgumentException(String.format("Class %s is not supported for conversion", dtoClass));
 
     }
 

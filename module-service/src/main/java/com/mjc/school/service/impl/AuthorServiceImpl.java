@@ -11,6 +11,7 @@ import com.mjc.school.service.exception.NewsNotFoundException;
 import com.mjc.school.service.utils.NewsValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ import java.util.Optional;
 @Service
 public class AuthorServiceImpl implements BaseService<AuthorCreateDto, AuthorResponseDto, Long> {
 
-
     private final BaseRepository<AuthorModel, Long> authorRepository;
 
     @Autowired
@@ -29,6 +29,7 @@ public class AuthorServiceImpl implements BaseService<AuthorCreateDto, AuthorRes
     }
 
     @Override
+    @Transactional
     public List<AuthorResponseDto> readAll() {
         var allAuthors = authorRepository.readAll();
         List<AuthorResponseDto> authorDto = new ArrayList<>();
@@ -39,6 +40,7 @@ public class AuthorServiceImpl implements BaseService<AuthorCreateDto, AuthorRes
     }
 
     @Override
+    @Transactional
     public AuthorResponseDto readById(Long id) {
         Optional<AuthorModel> author = authorRepository.readById(id);
         AuthorModel authorModel = author.orElseThrow(() -> new NewsNotFoundException(" Author with id " + id + " does not exist."));
@@ -46,6 +48,7 @@ public class AuthorServiceImpl implements BaseService<AuthorCreateDto, AuthorRes
     }
 
     @Override
+    @Transactional
     public AuthorResponseDto create(AuthorCreateDto createRequest) {
         AuthorModel authorModel = NewsMapper.INSTANCE.createAuthorDtoToAuthor(createRequest);
         NewsValidator.validateAuthor(createRequest.getName());
@@ -53,6 +56,7 @@ public class AuthorServiceImpl implements BaseService<AuthorCreateDto, AuthorRes
     }
 
     @Override
+    @Transactional
     public AuthorResponseDto update(AuthorCreateDto updateRequest) {
         Optional<AuthorModel> author = authorRepository.readById(updateRequest.getId());
         LocalDateTime createDate = author.orElseThrow(() -> new AuthorNotFoundException(" Author with id " + updateRequest.getId() + " does not exist.")).getCreateDate();
@@ -63,6 +67,7 @@ public class AuthorServiceImpl implements BaseService<AuthorCreateDto, AuthorRes
     }
 
     @Override
+    @Transactional
     public boolean deleteById(Long id) {
         if (!authorRepository.existById(id)) {
             throw new NewsNotFoundException(" Author with id " + id + " does not exist.");

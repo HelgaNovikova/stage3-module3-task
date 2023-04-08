@@ -67,7 +67,7 @@ public class AuthorServiceImplTest {
 
     @Test
     void deleteAuthorByIdDto() {
-        Mockito.when(authorRepository.readById(1L)).thenReturn(Optional.ofNullable(author));
+        Mockito.when(authorRepository.existById(1L)).thenReturn(true);
         Mockito.when(authorRepository.deleteById(1L)).thenReturn(true);
         var response = service.deleteById(1L);
         Assertions.assertTrue(response);

@@ -2,9 +2,12 @@ package com.mjc.school.service.dto;
 
 import com.mjc.school.repository.model.AuthorModel;
 import com.mjc.school.repository.model.NewsModel;
+import com.mjc.school.repository.model.TagModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 @Mapper
 public interface NewsMapper {
@@ -16,7 +19,12 @@ public interface NewsMapper {
     @Mapping(target = "createDate",
             dateFormat = ISO_FORMAT)
     @Mapping(target = "authorId", source = "author.id")
-    NewsResponseDto newsToNewsResponseDto(NewsModel pieceOfNews);
+    @Mapping(target = "tagIds", source = "newsTags")
+    NewsResponseDto newsToNewsResponseDto(NewsModel news);
+
+    default Long toId(TagModel dto){
+        return dto.getId();
+    }
 
     @Mapping(source = "author", target = "author")
     @Mapping(source = "dto.title", target = "title")
@@ -24,7 +32,8 @@ public interface NewsMapper {
     @Mapping(target = "lastUpdateDate", ignore = true)
     @Mapping(target = "createDate", ignore = true)
     @Mapping(target = "id", ignore = true)
-    NewsModel createNewsDtoToNews(NewsCreateDto dto, AuthorModel author);
+    @Mapping(target = "newsTags", source = "tags")
+    NewsModel createNewsDtoToNews(NewsCreateDto dto, AuthorModel author, List<TagModel> tags);
 
     AuthorModel createAuthorDtoToAuthor(AuthorCreateDto dto);
 
@@ -33,4 +42,8 @@ public interface NewsMapper {
     @Mapping(target = "createDate",
             dateFormat = ISO_FORMAT)
     AuthorResponseDto authorToAuthorResponseDto(AuthorModel author);
+
+    TagModel createTagDtoToTag(TagCreateDto dto);
+
+    TagResponseDto tagToTagResponseDto(TagModel tag);
 }

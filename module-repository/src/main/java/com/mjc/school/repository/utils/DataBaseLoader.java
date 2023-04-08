@@ -4,6 +4,7 @@ import com.mjc.school.repository.impl.AuthorRepository;
 import com.mjc.school.repository.impl.NewsRepository;
 import com.mjc.school.repository.impl.TagRepository;
 import com.mjc.school.repository.model.AuthorModel;
+import com.mjc.school.repository.model.NewsModel;
 import com.mjc.school.repository.model.TagModel;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,15 @@ public class DataBaseLoader implements InitializingBean {
 
     public static final int DEFAULT_NEWS_COUNT_TO_GENERATE = 20;
 
-    private AuthorRepository authorRepo;
-    private TagRepository tagRepo;
+    private final AuthorRepository authorRepo;
+    private final TagRepository tagRepo;
+    private final NewsRepository newsRepo;
 
     @Autowired
-    public DataBaseLoader(AuthorRepository authorRepo, TagRepository tagRepo) {
+    public DataBaseLoader(AuthorRepository authorRepo, TagRepository tagRepo, NewsRepository newsRepo) {
         this.authorRepo = authorRepo;
         this.tagRepo = tagRepo;
+        this.newsRepo = newsRepo;
     }
 
     private List<AuthorModel> writeAuthorsFromFileToDB(String path) {
@@ -86,7 +89,8 @@ public class DataBaseLoader implements InitializingBean {
         for (int i = 0; i < DEFAULT_NEWS_COUNT_TO_GENERATE; i++) {
             LocalDateTime now = LocalDateTime.now();
             if (contentFromFile.get(i).length() < 255 && titlesFromFile.get(i).length() < 255) {
-                // entityManager.merge(new NewsModel((long) i, titlesFromFile.get(i), contentFromFile.get(i), now, now, authorsFromFile.get(i)));
+                NewsModel news = new NewsModel((long) i, titlesFromFile.get(i), contentFromFile.get(i), now, now, authorsFromFile.get(i));
+                newsRepo.saveNewsToDB(news);
             }
         }
     }

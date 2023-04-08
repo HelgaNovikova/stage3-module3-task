@@ -2,6 +2,7 @@ package com.mjc.school.service.utils;
 
 import com.mjc.school.service.exception.AuthorNameException;
 import com.mjc.school.service.exception.ContentLengthException;
+import com.mjc.school.service.exception.TagNameException;
 import com.mjc.school.service.exception.TitleLengthException;
 
 
@@ -12,6 +13,8 @@ public class NewsValidator {
     private static final int MAX_TITLE_LENGTH = 30;
     private static final int MIN_CONTENT_LENGTH = 5;
     private static final int MAX_CONTENT_LENGTH = 255;
+    private static final int MIN_TAG_LENGTH = 3;
+    private static final int MAX_TAG_LENGTH = 15;
 
     public static boolean isAuthorValid(String author) {
         return author.length() >= MIN_AUTHOR_LENGTH && author.length() <= MAX_AUTHOR_LENGTH;
@@ -43,5 +46,15 @@ public class NewsValidator {
         if (!isAuthorValid(author)) {
             throw new AuthorNameException(String.format("Author's name can not be less than %d and more than %d symbols. Author's name is %s", MIN_AUTHOR_LENGTH, MAX_AUTHOR_LENGTH, author));
         }
+    }
+
+    public static void validateTag(String name) {
+        if (!isTagValid(name)) {
+            throw new TagNameException(String.format("Tag's name can not be less than %d and more than %d symbols. Tag's name is %s", MIN_TAG_LENGTH, MAX_TAG_LENGTH, name));
+        }
+    }
+
+    private static boolean isTagValid(String name) {
+        return name.length() >= MIN_TAG_LENGTH && name.length() <= MAX_TAG_LENGTH;
     }
 }

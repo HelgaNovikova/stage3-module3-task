@@ -1,8 +1,10 @@
 package com.mjc.school.service.impl;
 
 import com.mjc.school.repository.BaseRepository;
+import com.mjc.school.repository.ExtraNewsRepository;
 import com.mjc.school.repository.model.AuthorModel;
 import com.mjc.school.repository.model.NewsModel;
+import com.mjc.school.repository.model.TagModel;
 import com.mjc.school.service.dto.NewsCreateDto;
 import com.mjc.school.service.dto.NewsResponseDto;
 import org.junit.jupiter.api.Assertions;
@@ -24,16 +26,20 @@ public class NewsServiceImplTest {
 
     private BaseRepository<AuthorModel, Long> authorRepository;
 
+    private BaseRepository<TagModel, Long> tagRepository;
+
     private NewsServiceImpl service;
 
     private NewsModel news;
     private LocalDateTime now;
+    private ExtraNewsRepository extraNewsRepository;
 
     @BeforeEach
     void setUp() {
         newsRepository = mock(BaseRepository.class);
         authorRepository = mock(BaseRepository.class);
-        service = new NewsServiceImpl(newsRepository, authorRepository);
+        extraNewsRepository = mock(ExtraNewsRepository.class);
+        service = new NewsServiceImpl(newsRepository, authorRepository, tagRepository, extraNewsRepository);
         now = LocalDateTime.of(2023, 3, 5, 12, 0, 30);
         news = new NewsModel(1L, "title", "content", now, now, new AuthorModel(1L, "name", now, now));
     }
@@ -78,7 +84,7 @@ public class NewsServiceImplTest {
 
     @Test
     void deleteNewsByIdDto() {
-        Mockito.when(newsRepository.readById(1L)).thenReturn(Optional.ofNullable(news));
+        Mockito.when(newsRepository.existById(1L)).thenReturn(true);
         Mockito.when(newsRepository.deleteById(1L)).thenReturn(true);
         var response = service.deleteById(1L);
         Assertions.assertTrue(response);
@@ -89,9 +95,9 @@ public class NewsServiceImplTest {
     void updatePieceOfNewsByIdDto() {
         //GIVEN
         AuthorModel author = new AuthorModel(1L, "name", now, now);
-        NewsCreateDto dto = new NewsCreateDto(1L, "new Title", "new Content", 1L);
+        NewsCreateDto dto = new NewsCreateDto(1L, "new Title", "new Content", 1L,List.of());
         NewsModel updatedNews = new NewsModel(1L, "new Title", "new Content", now, now,
-                author);
+                author, List.of());
         Mockito.when(newsRepository.update(any())).thenReturn(updatedNews);
         Mockito.when(authorRepository.readById(anyLong())).thenReturn(Optional.of(author));
         Mockito.when(newsRepository.readById(anyLong())).thenReturn(Optional.ofNullable(news));
@@ -108,7 +114,7 @@ public class NewsServiceImplTest {
     void createPieceOfNewsDto() {
         //GIVEN
         AuthorModel author = new AuthorModel(1L, "name", now, now);
-        NewsCreateDto dto = new NewsCreateDto("new Title", "new Content", 1L);
+        NewsCreateDto dto = new NewsCreateDto("new Title", "new Content", 1L, List.of());
         NewsModel createdNews = new NewsModel(1L, "new Title", "new Content", now, now,
                 author);
         Mockito.when(newsRepository.create(any())).thenReturn(createdNews);

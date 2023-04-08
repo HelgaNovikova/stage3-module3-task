@@ -32,6 +32,7 @@ public class Menu implements InitializingBean {
                     run.accept(sc);
                 } catch (RuntimeException e) {
                     System.out.println(e.getMessage());
+                    //e.printStackTrace();
                 }
                 showMenu();
             }
@@ -54,7 +55,11 @@ public class Menu implements InitializingBean {
             String title = getTitle(sc);
             String content = getContent(sc);
             String authorId = getAuthorId(sc);
-            System.out.println(commandInvoker.createNews(title, content, authorId));
+            String tagIdsString = getTags(sc);
+            if (tagIdsString.equals("null")) {
+                tagIdsString = "";
+            }
+            System.out.println(commandInvoker.createNews(title, content, authorId, tagIdsString));
         });
 
         addMenuItem(4, "Update news.", sc -> {
@@ -63,7 +68,11 @@ public class Menu implements InitializingBean {
             String title = getTitle(sc);
             String content = getContent(sc);
             String authorId = getAuthorId(sc);
-            System.out.println(commandInvoker.updateNews(newsId, title, content, authorId));
+            String tagIdsString = getTags(sc);
+            if (tagIdsString.equals("null")) {
+                tagIdsString = "";
+            }
+            System.out.println(commandInvoker.updateNews(newsId, title, content, authorId, tagIdsString));
         });
 
         addMenuItem(5, "Remove news by id.", sc -> {
@@ -101,10 +110,76 @@ public class Menu implements InitializingBean {
         });
 
         addMenuItem(11, "Get all tags.",
-                sc -> System.out.println(commandInvoker.readAllAuthors()));
+                sc -> System.out.println(commandInvoker.readAllTags()));
+
+        addMenuItem(12, "Get tag by id.", sc -> {
+            System.out.println("Operation: Get tag by id.");
+            Long tagId = getTagIdLong(sc);
+            System.out.println(commandInvoker.readTagById(tagId));
+        });
+
+        addMenuItem(13, "Create tag.", sc -> {
+            System.out.println("Operation: Create tag.");
+            String name = getTagName(sc);
+            System.out.println(commandInvoker.createTag(name));
+        });
+
+        addMenuItem(14, "Update tag.", sc -> {
+            System.out.println("Operation: Update tag.");
+            String tagId = getTagId(sc);
+            String name = getTagName(sc);
+            System.out.println(commandInvoker.updateTag(tagId, name));
+        });
+
+        addMenuItem(15, "Remove tag by id.", sc -> {
+            System.out.println("Operation: Remove tag by id.");
+            Long tagId = getTagIdLong(sc);
+            System.out.println(commandInvoker.deleteTagById(tagId));
+        });
+
+        addMenuItem(16, "Get Author by news id", sc -> {
+            System.out.println("Operation: Getting Author by news id");
+            Long newsId = getNewsIdLong(sc);
+            System.out.println(commandInvoker.readAuthorByNewsId(newsId));
+        });
+
+        addMenuItem(17, "Get Tags by news id", sc -> {
+            System.out.println("Operation: Getting Tags by news id");
+            Long newsId = getNewsIdLong(sc);
+            System.out.println(commandInvoker.readTagsByNewsId(newsId));
+        });
+
+        addMenuItem(18, "Get News by tag names, tag ids, author name, title, content", sc -> {
+            System.out.println("Operation: Getting News by tag names, tag ids, author name, title, content");
+            String title = getTitle(sc);
+            String content = getContent(sc);
+            String authorName = getAuthorName(sc);
+            String tagId = getTagId(sc);
+            String tagName = getTagName(sc);
+            if (title.equals("null")) {
+                title = "";
+            }
+            if (content.equals("null")) {
+                content = "";
+            }
+            if (authorName.equals("null")) {
+                authorName = "";
+            }
+            if (tagId.equals("null")) {
+                tagId = "";
+            }
+            if (tagName.equals("null")) {
+                tagName = "";
+            }
+            System.out.println(commandInvoker.readNewsByParams(tagId, tagName, authorName, title, content));
+        });
 
         addMenuItem(0, "Exit.", sc -> {
         });
+    }
+
+    private String getTags(Scanner sc) {
+        return requestLine("Enter tags ids separated with commas, or null if no tags required:", sc);
     }
 
     private String getNewsId(Scanner sc) {
@@ -118,6 +193,11 @@ public class Menu implements InitializingBean {
 
     private Long getAuthorIdLong(Scanner sc) {
         System.out.println("Enter author id:");
+        return sc.nextLong();
+    }
+
+    private Long getTagIdLong(Scanner sc) {
+        System.out.println("Enter tag id:");
         return sc.nextLong();
     }
 
@@ -145,6 +225,11 @@ public class Menu implements InitializingBean {
         return getNextLine(sc);
     }
 
+    private String getTagName(Scanner sc) {
+        System.out.println("Enter tag's name:");
+        return getNextLine(sc);
+    }
+
     private String getNextLine(Scanner sc) {
         String line;
         do {
@@ -155,6 +240,10 @@ public class Menu implements InitializingBean {
 
     private String getAuthorId(Scanner sc) {
         return requestLine("Enter author id:", sc);
+    }
+
+    private String getTagId(Scanner sc) {
+        return requestLine("Enter tag id:", sc);
     }
 
     public void showMenu() {

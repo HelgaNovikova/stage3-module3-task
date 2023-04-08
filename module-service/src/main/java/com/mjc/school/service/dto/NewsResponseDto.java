@@ -1,5 +1,6 @@
 package com.mjc.school.service.dto;
 
+import java.util.List;
 import java.util.Objects;
 
 public class NewsResponseDto {
@@ -9,6 +10,15 @@ public class NewsResponseDto {
     private String createDate;
     private String lastUpdateDate;
     private long authorId;
+    private List<Long> tagIds;
+
+    public List<Long> getTagIds() {
+        return tagIds;
+    }
+
+    public void setTagIds(List<Long> tagIds) {
+        this.tagIds = tagIds;
+    }
 
     public long getId() {
         return id;
@@ -67,6 +77,7 @@ public class NewsResponseDto {
                 ", createDate=" + createDate +
                 ", lastUpdatedDate=" + lastUpdateDate +
                 ", authorId=" + authorId +
+                ", tagIds=" + tagIds.toString() +
                 ']';
     }
 

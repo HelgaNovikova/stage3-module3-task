@@ -1,6 +1,7 @@
 package com.mjc.school.repository.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "Tag")
@@ -13,9 +14,19 @@ public class TagModel implements BaseEntity<Long> {
     @Column(name = "name")
     private String name;
 
+    @ManyToMany(mappedBy = "newsTags")
+    private List<NewsModel> newsModel;
+
     public TagModel(Long id, String name) {
         this.id = id;
         this.name = name;
+        this.newsModel = null;
+    }
+
+    public TagModel(Long id, String name, List<NewsModel> newsModel) {
+        this.id = id;
+        this.name = name;
+        this.newsModel = newsModel;
     }
 
     public TagModel() {
