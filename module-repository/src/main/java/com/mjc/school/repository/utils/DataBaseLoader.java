@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Component
+//@Component
 public class DataBaseLoader implements InitializingBean {
 
     public static final int DEFAULT_NEWS_COUNT_TO_GENERATE = 20;
