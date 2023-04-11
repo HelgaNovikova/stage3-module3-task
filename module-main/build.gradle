@@ -8,7 +8,6 @@ mainClassName = 'com.mjc.school.Main'
 
 dependencies {
     implementation project(':module-web')
-//    implementation 'org.springframework.boot:spring-boot-starter'
     implementation "org.springframework:spring-core:$springVersion"
     implementation "org.springframework:spring-context:$springVersion"
 }
